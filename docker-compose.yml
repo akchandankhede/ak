@@ -1,0 +1,30 @@
+version: '3'
+
+
+services: 
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=signals
+      - MONGO_INITDB_ROOT_PASSWORD=insecure
+    ports:
+      - 27019:27017
+    volumes:
+      - webform-mongo:/data/db
+
+
+  app:
+    build: ./app
+    container_name: webform-backend-app
+    command: python manage.py runserver 0.0.0.0:8002
+    volumes:
+      - ./app/:/app/
+    ports:
+      - 8002:8002
+    external_links:
+      - mongo
+    
+volumes:
+  webform-mongo:
